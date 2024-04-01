@@ -15,7 +15,7 @@ import { User } from './users/user.entity';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: env.DB_TYPE as any,
       host: env.DB_HOST,
       port: parseInt(env.DB_PORT),
       username: env.DB_USERNAME,

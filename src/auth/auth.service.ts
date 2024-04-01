@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { promisify } from 'util';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
+import { HASH_SIZE, PASSWORD_SEPARATOR } from './constans';
 
 const scrypt = promisify(_scrypt);
 
@@ -30,12 +31,14 @@ export class AuthService {
       throw new BadRequestException('Email in use');
     }
     // hash the users password
-    // generate the  salt (16 characters)
+    // generate the salt (16 characters)
     const salt = randomBytes(8).toString('hex');
     // hash the salt and the password together
-    const hash = ((await scrypt(password, salt, 32)) as Buffer).toString('hex');
+    const hash = ((await scrypt(password, salt, HASH_SIZE)) as Buffer).toString(
+      'hex',
+    );
     // join the hashed result and salt together
-    const result = `${salt}.${hash}`;
+    const result = `${salt}${PASSWORD_SEPARATOR}${hash}`;
     // create a new user and save it
     const user = await this.usersService.create(email, result);
 
@@ -53,7 +56,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-    const [storedSalt, storedHash] = user.password.split('.');
+    const [storedSalt, storedHash] = user.password.split(PASSWORD_SEPARATOR);
     const hash = ((await scrypt(password, storedSalt, 32)) as Buffer).toString(
       'hex',
     );
@@ -61,10 +64,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { ...user };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: userPassword, ...payload } = user;
     const accessToken = await this.jwtService.signAsync(payload);
     return {
-      user,
+      user: payload,
       accessToken,
     };
   }
