@@ -1,15 +1,30 @@
-import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Booking } from 'src/bookings/booking.entity';
+import { Company } from 'src/company/company.entity';
+import { CommonEntity } from 'src/shared/common.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { UserRoleEnum } from './user.enums';
 
 @Entity()
-export class User {
+export class User extends CommonEntity<User> {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
   email: string;
 
-  @Exclude()
-  @Column()
+  @Column({ select: false })
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRoleEnum,
+    default: UserRoleEnum.User,
+  })
+  role: UserRoleEnum;
+
+  @OneToMany(() => Booking, (booking) => booking.user)
+  bookings: Booking[];
+
+  @OneToMany(() => Company, (company) => company.user)
+  company: Company[];
 }

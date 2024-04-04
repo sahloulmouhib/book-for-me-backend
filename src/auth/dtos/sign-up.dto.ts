@@ -1,5 +1,6 @@
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
-import { signUpUserValidation } from '../constans';
+import { IsEmail, IsIn, IsString, MaxLength, MinLength } from 'class-validator';
+import { signUpUserValidation } from '../constants';
+import { UserRoleEnum } from 'src/users/user.enums';
 
 export class SignUpDto {
   @IsEmail()
@@ -14,4 +15,7 @@ export class SignUpDto {
   @MinLength(signUpUserValidation.password.MIN_LENGTH)
   @IsString()
   confirmPassword: string;
+
+  @IsIn([UserRoleEnum.User, UserRoleEnum.CompanyOwner])
+  role: UserRoleEnum.User | UserRoleEnum.CompanyOwner;
 }

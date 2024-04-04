@@ -7,6 +7,10 @@ import { env } from 'process';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
+import { BookingsModule } from './bookings/bookings.module';
+import { Booking } from './bookings/booking.entity';
+import { CompanyModule } from './company/company.module';
+import { Company } from './company/company.entity';
 
 @Module({
   imports: [
@@ -21,11 +25,13 @@ import { User } from './users/user.entity';
       username: env.DB_USERNAME,
       password: env.DB_PASSWORD,
       database: env.DB_NAME,
-      entities: [User],
+      entities: [User, Booking, Company],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
+    BookingsModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

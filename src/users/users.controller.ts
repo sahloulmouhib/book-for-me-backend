@@ -1,6 +1,8 @@
-import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthenticatedUser } from 'src/decorators/authentificated-user';
+import { User } from './user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -8,7 +10,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getCurrentUserProfile(@Request() req) {
-    return req.user;
+  getCurrentUserProfile(@AuthenticatedUser() user: User) {
+    return user;
   }
 }

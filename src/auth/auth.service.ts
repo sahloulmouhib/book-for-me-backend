@@ -9,7 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { promisify } from 'util';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
-import { HASH_SIZE, PASSWORD_SEPARATOR } from './constans';
+import { HASH_SIZE, PASSWORD_SEPARATOR, SALT_SIZE } from './constants';
 
 const scrypt = promisify(_scrypt);
 
@@ -21,18 +21,18 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
-    const { email, password, confirmPassword } = signUpDto;
+    const { email, password, confirmPassword, role } = signUpDto;
     if (password !== confirmPassword) {
       throw new BadRequestException('Passwords does not match');
     }
     // see if the email is in use
     const users = await this.usersService.findOneByEmail(email);
     if (users) {
-      throw new BadRequestException('Email in use');
+      throw new BadRequestException('Email already in use');
     }
     // hash the users password
     // generate the salt (16 characters)
-    const salt = randomBytes(8).toString('hex');
+    const salt = randomBytes(SALT_SIZE).toString('hex');
     // hash the salt and the password together
     const hash = ((await scrypt(password, salt, HASH_SIZE)) as Buffer).toString(
       'hex',
@@ -40,7 +40,7 @@ export class AuthService {
     // join the hashed result and salt together
     const result = `${salt}${PASSWORD_SEPARATOR}${hash}`;
     // create a new user and save it
-    const user = await this.usersService.create(email, result);
+    const user = await this.usersService.create(email, result, role);
 
     const payload = { ...user };
     const accessToken = await this.jwtService.signAsync(payload);
