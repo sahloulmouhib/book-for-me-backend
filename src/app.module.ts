@@ -11,6 +11,8 @@ import { BookingsModule } from './bookings/bookings.module';
 import { Booking } from './bookings/booking.entity';
 import { CompanyModule } from './company/company.module';
 import { Company } from './company/company.entity';
+import { Availability } from './availability/availability.entity';
+import { AvailabilityModule } from './availability/availability.module';
 
 @Module({
   imports: [
@@ -25,13 +27,14 @@ import { Company } from './company/company.entity';
       username: env.DB_USERNAME,
       password: env.DB_PASSWORD,
       database: env.DB_NAME,
-      entities: [User, Booking, Company],
+      entities: [User, Booking, Company, Availability],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
     BookingsModule,
     CompanyModule,
+    AvailabilityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

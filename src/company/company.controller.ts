@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { CompanyService } from './company.service';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthenticatedUser } from 'src/decorators/authentificated-user';
+import { User } from 'src/users/user.entity';
+import { CreateCompanyDto } from './dtos/create-company.dto';
 
-@Controller('company')
-export class CompanyController {}
+@UseGuards(AuthGuard)
+@Controller('companies')
+export class CompanyController {
+  constructor(private companyService: CompanyService) {}
+
+  @Post()
+  createCompany(
+    @Body() { availabilities, title }: CreateCompanyDto,
+    @AuthenticatedUser() user: User,
+  ) {
+    return this.companyService.createCompany(user.id, title, availabilities);
+  }
+}

@@ -25,6 +25,6 @@ export class User extends CommonEntity<User> {
   @OneToMany(() => Booking, (booking) => booking.user)
   bookings: Booking[];
 
-  @OneToMany(() => Company, (company) => company.user)
-  company: Company[];
+  @OneToMany(() => Company, (company) => company.owner)
+  companies: Company[];
 }
