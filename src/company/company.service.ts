@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './company.entity';
 import { Repository } from 'typeorm';
 import { WEEK_DAYS_LENGTH } from './constants';
 import { AvailabilityService } from 'src/availability/availability.service';
-import { CompanyAvailability } from 'src/availability/types';
+import { CompanyAvailability } from 'src/availability/availability.types';
+import { formatAvailabilities } from 'src/availability/availability.helpers';
 
 @Injectable()
 export class CompanyService {
@@ -31,7 +36,24 @@ export class CompanyService {
 
     return {
       company: createdCompany,
-      availabilities: createdAvailabilities,
+      availabilities: formatAvailabilities(createdAvailabilities),
+    };
+  }
+
+  async getCompany(companyId: string) {
+    const company: Company | null = companyId
+      ? await this.repo.findOneBy({
+          id: companyId,
+        })
+      : null;
+    if (!company) {
+      throw new NotFoundException('Company is not found');
+    }
+    const availabilities =
+      await this.availabilityService.getCompanyAvailabilities(companyId);
+    return {
+      company,
+      availabilities,
     };
   }
 }

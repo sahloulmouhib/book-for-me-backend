@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CompanyService } from './company.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthenticatedUser } from 'src/decorators/authentificated-user';
@@ -16,5 +16,10 @@ export class CompanyController {
     @AuthenticatedUser() user: User,
   ) {
     return this.companyService.createCompany(user.id, title, availabilities);
+  }
+
+  @Get('/availabilities/:id')
+  getCompanyAvailabilities(@Param('id') id: string) {
+    return this.companyService.getCompany(id);
   }
 }

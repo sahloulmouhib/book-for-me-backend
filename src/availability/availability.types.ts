@@ -1,6 +1,6 @@
 import { WeekdayEnum } from 'src/enums';
 
-interface AvailabilitySlot {
+export interface AvailabilitySlot {
   startTime: number;
   endTime: number;
 }
