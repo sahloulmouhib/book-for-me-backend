@@ -5,8 +5,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { CompanyAvailability } from 'src/availability/availability.types';
-import { MIN_DAY_MINUTES, MAX_DAY_MINUTES } from 'src/constants';
+import { CompanyAvailability } from 'src/availabilities/availabilities.types';
 import { WeekdayEnum } from 'src/enums';
 
 @ValidatorConstraint({ name: 'IsAvailabilities', async: false })
@@ -18,23 +17,14 @@ export class AvailabilitiesValidator implements ValidatorConstraintInterface {
 
     const weekDayArray = [];
     availabilities.forEach((availability) => {
-      if (availability.slots.length === 0) {
-        isValid = false;
-        return;
-      }
       weekDayArray.push(availability.weekDay);
-      availability.slots.forEach((slot) => {
-        if (
-          slot.startTime <= MIN_DAY_MINUTES ||
-          slot.startTime >= MAX_DAY_MINUTES ||
-          slot.endTime <= MIN_DAY_MINUTES ||
-          slot.endTime >= MAX_DAY_MINUTES ||
-          slot.startTime > slot.endTime
-        ) {
-          isValid = false;
-        }
-        if (!isValid) return;
-      });
+      availability.slots.length > 0 &&
+        availability.slots.forEach((slot) => {
+          if (slot.startTime > slot.endTime) {
+            isValid = false;
+          }
+          if (!isValid) return;
+        });
     });
     const weekDayIds = Object.values(WeekdayEnum);
     if (!weekDayArray.every((item) => weekDayIds.includes(item))) {
@@ -44,7 +34,7 @@ export class AvailabilitiesValidator implements ValidatorConstraintInterface {
   }
 
   defaultMessage() {
-    return `Availabilities array must include all week days ids from ${WeekdayEnum.Monday} to ${WeekdayEnum.Sunday}, each availability must have a startTime and endTime between 0 and 3600, and startTime must be smaller than endTime`;
+    return `availabilities array must include all week days ids from ${WeekdayEnum.Monday} to ${WeekdayEnum.Sunday}, each slot must have a startTime smaller than endTime`;
   }
 }
 

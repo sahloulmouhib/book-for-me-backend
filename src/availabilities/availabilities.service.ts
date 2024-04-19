@@ -2,27 +2,28 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Availability } from './availability.entity';
-import { CompanyAvailability } from './availability.types';
-import { formatAvailabilities } from './availability.helpers';
+import { formatAvailabilities } from './availabilities.helpers';
+import { CreateAvailabilityDto } from 'src/availabilities/dtos/create-availability.dto';
 
 @Injectable()
-export class AvailabilityService {
+export class AvailabilitiesService {
   constructor(
     @InjectRepository(Availability)
     private repo: Repository<Availability>,
   ) {}
 
-  async create(availabilities: CompanyAvailability[], companyId: string) {
+  async create(availabilities: CreateAvailabilityDto[], companyId: string) {
     const newAvailabilities: Array<DeepPartial<Availability>> = [];
     availabilities.forEach(({ slots, weekDay }) => {
-      slots.forEach(({ endTime, startTime }) => {
-        newAvailabilities.push({
-          companyId,
-          endTime,
-          startTime,
-          weekDay,
+      slots.length > 0 &&
+        slots.forEach(({ endTime, startTime }) => {
+          newAvailabilities.push({
+            companyId,
+            endTime,
+            startTime,
+            weekDay,
+          });
         });
-      });
     });
     const createdAvailabilities = this.repo.create(newAvailabilities);
     return this.repo.save(createdAvailabilities);

@@ -7,7 +7,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Availability } from '../availability/availability.entity';
+import { Availability } from '../availabilities/availability.entity';
+import { Service } from 'src/services/service.entity';
 
 @Entity()
 export class Company extends CommonEntity<Company> {
@@ -25,4 +26,7 @@ export class Company extends CommonEntity<Company> {
 
   @OneToMany(() => Availability, (availability) => availability.company)
   availabilities: Availability[];
+
+  @OneToMany(() => Service, (service) => service.company)
+  services: Service[];
 }

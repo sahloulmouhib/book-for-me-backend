@@ -9,10 +9,13 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
 import { BookingsModule } from './bookings/bookings.module';
 import { Booking } from './bookings/booking.entity';
-import { CompanyModule } from './company/company.module';
-import { Company } from './company/company.entity';
-import { Availability } from './availability/availability.entity';
-import { AvailabilityModule } from './availability/availability.module';
+import { CompaniesModule } from './companies/companies.module';
+import { Company } from './companies/companies.entity';
+import { Availability } from './availabilities/availability.entity';
+import { AvailabilitiesModule } from './availabilities/availabilities.module';
+import { ServicesController } from './services/services.controller';
+import { ServicesModule } from './services/services.module';
+import { Service } from './services/service.entity';
 
 @Module({
   imports: [
@@ -27,16 +30,17 @@ import { AvailabilityModule } from './availability/availability.module';
       username: env.DB_USERNAME,
       password: env.DB_PASSWORD,
       database: env.DB_NAME,
-      entities: [User, Booking, Company, Availability],
+      entities: [User, Booking, Company, Availability, Service],
       synchronize: true,
     }),
     UsersModule,
     AuthModule,
     BookingsModule,
-    CompanyModule,
-    AvailabilityModule,
+    CompaniesModule,
+    AvailabilitiesModule,
+    ServicesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ServicesController],
   providers: [AppService],
 })
 export class AppModule {}

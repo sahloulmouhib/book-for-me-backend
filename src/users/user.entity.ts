@@ -1,8 +1,8 @@
 import { Booking } from 'src/bookings/booking.entity';
-import { Company } from 'src/company/company.entity';
+import { Company } from 'src/companies/companies.entity';
 import { CommonEntity } from 'src/shared/common.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { UserRoleEnum } from './user.enums';
+import { UserRoleEnum } from './users.enums';
 
 @Entity()
 export class User extends CommonEntity<User> {

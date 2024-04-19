@@ -1,6 +1,6 @@
 import { IsEmail, IsIn, IsString, MaxLength, MinLength } from 'class-validator';
 import { signUpUserValidation } from '../constants';
-import { UserRoleEnum } from 'src/users/user.enums';
+import { UserRoleEnum } from 'src/users/users.enums';
 
 export class SignUpDto {
   @IsEmail()

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AvailabilityService } from './availability.service';
+import { AvailabilitiesService } from './availabilities.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Availability } from './availability.entity';
 
 @Module({
-  providers: [AvailabilityService],
-  exports: [AvailabilityService],
+  providers: [AvailabilitiesService],
+  exports: [AvailabilitiesService],
   imports: [TypeOrmModule.forFeature([Availability])],
 })
-export class AvailabilityModule {}
+export class AvailabilitiesModule {}

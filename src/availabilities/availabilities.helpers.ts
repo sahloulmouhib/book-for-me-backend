@@ -1,6 +1,6 @@
 import { WeekdayEnum } from 'src/enums';
 import { Availability } from './availability.entity';
-import { AvailabilitySlot, CompanyAvailability } from './availability.types';
+import { AvailabilitySlot, CompanyAvailability } from './availabilities.types';
 
 export const formatAvailabilities = (
   availabilities: Availability[],
