@@ -13,6 +13,7 @@ import { WEEK_DAYS_LENGTH } from '../companies.constants';
 import { CreateAvailabilityDto } from '../../availabilities/dtos/create-availability.dto';
 import { Type } from 'class-transformer';
 import { CreateServiceDto } from 'src/services/dtos/create-service.dto';
+import { MIN_SERVICES_SIZE } from 'src/services/services.constants';
 
 export class CreateCompanyDto {
   @MaxLength(MAX_STRING_LENGTH)
@@ -32,5 +33,7 @@ export class CreateCompanyDto {
   // eslint-disable-next-line @darraghor/nestjs-typed/validate-nested-of-array-should-set-each
   @ValidateNested({ each: true })
   @Type(() => CreateServiceDto)
-  service: CreateServiceDto;
+  @IsArray()
+  @ArrayMinSize(MIN_SERVICES_SIZE)
+  services: CreateServiceDto[];
 }

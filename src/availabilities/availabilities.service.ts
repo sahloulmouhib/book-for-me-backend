@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Availability } from './availability.entity';
@@ -32,5 +32,22 @@ export class AvailabilitiesService {
   async getCompanyAvailabilities(companyId: string) {
     const availabilities = await this.repo.findBy({ companyId });
     return formatAvailabilities(availabilities);
+  }
+
+  async deleteCompanyAvailabilities(companyId: string) {
+    const availabilities = await this.repo.findBy({ companyId });
+    if (availabilities.length === 0) {
+      throw new NotFoundException('No Availabilities found for this company');
+    }
+    return this.repo.remove(availabilities);
+  }
+
+  async updateCompanyAvailabilities(
+    availabilities: CreateAvailabilityDto[],
+    companyId: string,
+  ) {
+    await this.deleteCompanyAvailabilities(companyId);
+    const createdAvailabilities = await this.create(availabilities, companyId);
+    return formatAvailabilities(createdAvailabilities);
   }
 }

@@ -9,6 +9,5 @@ export class CreateAvailabilityDto {
 
   @ValidateNested({ each: true })
   @Type(() => CreateSlotDto)
-  // eslint-disable-next-line @darraghor/nestjs-typed/all-properties-are-whitelisted, @darraghor/nestjs-typed/all-properties-have-explicit-defined
   slots: CreateSlotDto[];
 }

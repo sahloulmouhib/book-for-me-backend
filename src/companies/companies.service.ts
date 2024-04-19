@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -10,8 +11,10 @@ import { Repository } from 'typeorm';
 import { AvailabilitiesService } from 'src/availabilities/availabilities.service';
 import { formatAvailabilities } from 'src/availabilities/availabilities.helpers';
 import { ServicesService } from 'src/services/services.service';
-import { CompanyService } from 'src/services/services.types';
 import { CreateAvailabilityDto } from '../availabilities/dtos/create-availability.dto';
+import { CreateServiceDto } from 'src/services/dtos/create-service.dto';
+import { isAdminOrAllowedUser } from 'src/helpers/helpers';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class CompaniesService {
@@ -21,32 +24,6 @@ export class CompaniesService {
     @Inject(forwardRef(() => ServicesService))
     private servicesService: ServicesService,
   ) {}
-
-  async createCompany(
-    ownerId: string,
-    title: string,
-    availabilities: CreateAvailabilityDto[],
-    service: CompanyService,
-  ) {
-    // TODO: add transaction
-    const company = this.repo.create({ ownerId, title });
-    const createdCompany = await this.repo.save(company);
-    const createdAvailabilities = await this.availabilitiesService.create(
-      availabilities,
-      createdCompany.id,
-    );
-    const createdService = await this.servicesService.create(
-      company.id,
-      service.title,
-      service.duration,
-    );
-
-    return {
-      company: createdCompany,
-      availabilities: formatAvailabilities(createdAvailabilities),
-      service: createdService,
-    };
-  }
 
   async find(companyId: string) {
     const company: Company | null = companyId
@@ -62,11 +39,50 @@ export class CompaniesService {
     if (!company) {
       throw new NotFoundException('Company is not found');
     }
+    return company;
+  }
+
+  async createCompany(
+    ownerId: string,
+    title: string,
+    availabilities: CreateAvailabilityDto[],
+    services: CreateServiceDto[],
+  ) {
+    // TODO: add transaction
+    const company = this.repo.create({ ownerId, title });
+    const createdCompany = await this.repo.save(company);
+    const createdAvailabilities = await this.availabilitiesService.create(
+      availabilities,
+      createdCompany.id,
+    );
+    const createdService = await this.servicesService.createCompanyServices(
+      company.id,
+      services,
+    );
+
+    return {
+      company: createdCompany,
+      availabilities: formatAvailabilities(createdAvailabilities),
+      services: createdService,
+    };
+  }
+
+  async getCompanyProfile(companyId: string) {
+    const company = await this.getCompany(companyId);
     const availabilities =
       await this.availabilitiesService.getCompanyAvailabilities(companyId);
     return {
       company,
       availabilities,
     };
+  }
+
+  async checkCompanyOwner(companyId: string, owner: User) {
+    const company = await this.getCompany(companyId);
+    if (!isAdminOrAllowedUser(owner, company.ownerId)) {
+      throw new ForbiddenException(
+        'You are not allowed to manage to this company',
+      );
+    }
   }
 }

@@ -12,19 +12,19 @@ export class CompaniesController {
 
   @Post()
   createCompany(
-    @Body() { availabilities, title, service }: CreateCompanyDto,
+    @Body() { availabilities, title, services }: CreateCompanyDto,
     @AuthenticatedUser() user: User,
   ) {
     return this.companyService.createCompany(
       user.id,
       title,
       availabilities,
-      service,
+      services,
     );
   }
 
-  @Get('/availabilities/:id')
-  getCompanyAvailabilities(@Param('id') id: string) {
-    return this.companyService.getCompany(id);
+  @Get('profile/:id')
+  getCompanyProfile(@Param('id') id: string) {
+    return this.companyService.getCompanyProfile(id);
   }
 }
