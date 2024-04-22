@@ -13,7 +13,6 @@ import { CompaniesModule } from './companies/companies.module';
 import { Company } from './companies/companies.entity';
 import { Availability } from './availabilities/availability.entity';
 import { AvailabilitiesModule } from './availabilities/availabilities.module';
-import { ServicesController } from './services/services.controller';
 import { ServicesModule } from './services/services.module';
 import { Service } from './services/service.entity';
 
@@ -40,7 +39,7 @@ import { Service } from './services/service.entity';
     AvailabilitiesModule,
     ServicesModule,
   ],
-  controllers: [AppController, ServicesController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

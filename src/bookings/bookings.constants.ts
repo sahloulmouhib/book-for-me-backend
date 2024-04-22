@@ -1,0 +1,1 @@
+export const BOOKING_YEAR_TO_ADD_FROM_NOW = 1;

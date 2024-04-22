@@ -6,18 +6,18 @@ import { User } from 'src/users/user.entity';
 import { AddCompanyServiceDto } from './dtos/add-company-services.dto';
 
 @UseGuards(AuthGuard)
-@Controller('services')
+@Controller('')
 export class ServicesController {
   constructor(private serviceService: ServicesService) {}
 
-  @Post('')
+  @Post('services')
   addCompanyServices(
     @Body() { companyId, services }: AddCompanyServiceDto,
     @AuthenticatedUser() user: User,
   ) {
     return this.serviceService.addCompanyServices(user, companyId, services);
   }
-  @Get('/:companyId/companies')
+  @Get('companies/:companyId/services')
   getCompanyServices(@Param('companyId') companyId: string) {
     return this.serviceService.getCompanyServices(companyId);
   }

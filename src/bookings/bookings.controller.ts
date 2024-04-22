@@ -14,10 +14,10 @@ import { AuthenticatedUser } from 'src/decorators/authentificated-user';
 import { User } from 'src/users/user.entity';
 
 @UseGuards(AuthGuard)
-@Controller('bookings')
+@Controller()
 export class BookingsController {
   constructor(private bookingsService: BookingsService) {}
-  @Post()
+  @Post('bookings')
   createBooking(
     @Body() createBookingDto: CreateBookingDto,
     @AuthenticatedUser() user: User,
@@ -25,13 +25,18 @@ export class BookingsController {
     return this.bookingsService.create(createBookingDto, user.id);
   }
 
-  @Get()
+  @Get('bookings')
   getUserBookings(@AuthenticatedUser() user: User) {
     return this.bookingsService.getUserBookings(user.id);
   }
 
-  @Delete('/:id')
+  @Delete('bookings/:id')
   deleteUserBooking(@Param('id') id: string, @AuthenticatedUser() user: User) {
     return this.bookingsService.deleteUserBooking(id, user.id);
+  }
+
+  @Get('companies/:companyId/bookings')
+  getCompanyBookings(@Param('companyId') companyId: string) {
+    return this.bookingsService.getCompanyBookings(companyId);
   }
 }
