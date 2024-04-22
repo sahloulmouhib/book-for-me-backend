@@ -21,7 +21,6 @@ export class CreateCompanyDto {
   @IsString()
   title: string;
 
-  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @IsAvailabilities()
   @IsArray()
   @ArrayMaxSize(WEEK_DAYS_LENGTH)
@@ -30,7 +29,6 @@ export class CreateCompanyDto {
   @Type(() => CreateAvailabilityDto)
   availabilities: CreateAvailabilityDto[];
 
-  // eslint-disable-next-line @darraghor/nestjs-typed/validate-nested-of-array-should-set-each
   @ValidateNested({ each: true })
   @Type(() => CreateServiceDto)
   @IsArray()

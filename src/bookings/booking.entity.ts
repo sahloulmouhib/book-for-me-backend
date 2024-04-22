@@ -1,3 +1,4 @@
+import { Service } from 'src/services/service.entity';
 import { CommonEntity } from 'src/shared/common.entity';
 import { User } from 'src/users/user.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
@@ -6,7 +7,8 @@ export class Booking extends CommonEntity<Booking> {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'timestamp' })
+  // TODO: default value
+  @Column({ type: 'timestamp', default: null })
   date: Date;
 
   @ManyToOne(() => User, (user) => user.bookings)
@@ -14,4 +16,11 @@ export class Booking extends CommonEntity<Booking> {
 
   @Column()
   userId: string;
+
+  @ManyToOne(() => Service, (service) => service.bookings)
+  service: Service;
+  // TODO: test
+  // @JoinColumn({ referencedColumnName: 'id', name: 'serviceId' })
+  @Column()
+  serviceId: string;
 }

@@ -1,6 +1,13 @@
 import { CommonEntity } from 'src/shared/common.entity';
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  Column,
+  OneToMany,
+} from 'typeorm';
 import { Company } from '../companies/companies.entity';
+import { Booking } from 'src/bookings/booking.entity';
 
 @Entity()
 export class Service extends CommonEntity<Service> {
@@ -18,4 +25,7 @@ export class Service extends CommonEntity<Service> {
 
   @Column()
   companyId: string;
+
+  @OneToMany(() => Booking, (booking) => booking.service)
+  bookings: Service[];
 }

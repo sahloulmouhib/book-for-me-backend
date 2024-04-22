@@ -18,7 +18,6 @@ export class ServicesController {
     return this.serviceService.addCompanyServices(user, companyId, services);
   }
   @Get('/:companyId/companies')
-  // eslint-disable-next-line @darraghor/nestjs-typed/param-decorator-name-matches-route-param
   getCompanyServices(@Param('companyId') companyId: string) {
     return this.serviceService.getCompanyServices(companyId);
   }

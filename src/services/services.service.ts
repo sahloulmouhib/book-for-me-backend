@@ -1,4 +1,9 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Service } from './service.entity';
 import { Repository } from 'typeorm';
@@ -13,6 +18,14 @@ export class ServicesService {
     @Inject(forwardRef(() => CompaniesService))
     private companiesService: CompaniesService,
   ) {}
+
+  async getServiceById(serviceId: string) {
+    const service = await this.repo.findOneBy({ id: serviceId });
+    if (!service) {
+      throw new NotFoundException('Service was not found');
+    }
+    return service;
+  }
 
   async createCompanyServices(companyId: string, services: CreateServiceDto[]) {
     const servicesToCreate = services.map(({ duration, title }) => ({

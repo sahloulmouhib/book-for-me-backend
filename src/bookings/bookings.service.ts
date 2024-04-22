@@ -9,19 +9,20 @@ import { Booking } from './booking.entity';
 import { Equal, Repository } from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import { removeSecondsAndMilliseconds } from 'src/helpers/date.helpers';
+import { CreateBookingDto } from './dtos/create-booking.dto';
+import { ServicesService } from 'src/services/services.service';
 
 @Injectable()
 export class BookingsService {
   constructor(
     @InjectRepository(Booking) private repo: Repository<Booking>,
     private usersService: UsersService,
+    private servicesService: ServicesService,
   ) {}
 
   async findOneByDate(date: Date) {
-    return this.repo.findOne({
-      where: {
-        date: Equal(date),
-      },
+    return this.repo.findOneBy({
+      date: Equal(date),
     });
   }
 
@@ -33,17 +34,20 @@ export class BookingsService {
         });
   }
 
-  async create(date: Date, userId: string) {
+  async create({ date, serviceId }: CreateBookingDto, userId: string) {
+    await this.usersService.findUserById(userId);
+    await this.servicesService.getServiceById(serviceId);
+
     const formattedDate = removeSecondsAndMilliseconds(date);
-    const isUserIdExists = !!(await this.usersService.findOneById(userId));
-    if (!isUserIdExists) {
-      throw new NotFoundException('User is not found');
-    }
     const isDateTaken = await this.findOneByDate(formattedDate);
     if (isDateTaken) {
       throw new BadRequestException('Chosen date is already taken');
     }
-    const booking = this.repo.create({ date: formattedDate, userId });
+    const booking = this.repo.create({
+      date: formattedDate,
+      userId,
+      serviceId,
+    });
     return this.repo.save(booking);
   }
 

@@ -19,10 +19,10 @@ export class BookingsController {
   constructor(private bookingsService: BookingsService) {}
   @Post()
   createBooking(
-    @Body() createBooking: CreateBookingDto,
+    @Body() createBookingDto: CreateBookingDto,
     @AuthenticatedUser() user: User,
   ) {
-    return this.bookingsService.create(createBooking.date, user.id);
+    return this.bookingsService.create(createBookingDto, user.id);
   }
 
   @Get()

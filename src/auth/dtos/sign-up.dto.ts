@@ -16,7 +16,6 @@ export class SignUpDto {
   @IsString()
   confirmPassword: string;
 
-  // eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
   @IsIn([UserRoleEnum.User, UserRoleEnum.CompanyOwner])
   role: UserRoleEnum.User | UserRoleEnum.CompanyOwner;
 }
