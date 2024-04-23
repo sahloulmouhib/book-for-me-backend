@@ -9,7 +9,7 @@ import { CompanyAvailability } from 'src/availabilities/availabilities.types';
 import { WeekdayEnum } from 'src/enums';
 
 @ValidatorConstraint({ name: 'IsAvailabilities', async: false })
-export class AvailabilitiesValidator implements ValidatorConstraintInterface {
+class AvailabilitiesValidator implements ValidatorConstraintInterface {
   validate(value: unknown) {
     const availabilities = value as CompanyAvailability[];
 

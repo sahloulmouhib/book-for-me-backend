@@ -6,7 +6,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './booking.entity';
-import { Equal, MoreThanOrEqual, Repository } from 'typeorm';
+import {
+  Between,
+  Equal,
+  FindOperator,
+  LessThan,
+  MoreThan,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 import { UsersService } from 'src/users/users.service';
 import {
   addMinutesToDate,
@@ -23,21 +31,26 @@ export class BookingsService {
     private servicesService: ServicesService,
   ) {}
 
-  async findOneByDate(date: Date) {
+  async findBookingByDate(date: Date) {
     return this.repo.findOneBy({
       date: Equal(date),
     });
   }
 
-  async findOneById(id: string) {
-    return !id
-      ? null
-      : this.repo.findOne({
-          where: { id },
-        });
+  async findBookingById(id: string) {
+    const booking = await this.repo.findOne({
+      where: { id },
+    });
+    if (!booking) {
+      throw new NotFoundException('Booking is not found');
+    }
+    return booking;
   }
 
-  async create({ date, serviceId }: CreateBookingDto, userId: string) {
+  async createBookingForUser(
+    { date, serviceId }: CreateBookingDto,
+    userId: string,
+  ) {
     await this.usersService.findUserById(userId);
     await this.servicesService.getServiceById(serviceId);
 
@@ -59,10 +72,7 @@ export class BookingsService {
   }
 
   async deleteUserBooking(bookingId: string, userId: string) {
-    const booking = await this.findOneById(bookingId);
-    if (!booking) {
-      throw new NotFoundException('Booking is not found');
-    }
+    const booking = await this.findBookingById(bookingId);
     if (booking.userId !== userId) {
       throw new ForbiddenException('Cannot delete this booking');
     }
@@ -75,10 +85,25 @@ export class BookingsService {
     });
   }
 
-  async getCompanyBookings(companyId: string) {
+  async getCompanyBookingsByDate(
+    companyId: string,
+    minDate?: Date,
+    maxDate?: Date,
+  ) {
+    minDate = minDate || maxDate ? minDate : new Date();
+    let dateFilter: FindOperator<Date> | undefined;
+    if (minDate && maxDate) {
+      dateFilter = Between(minDate, maxDate);
+    } else if (minDate) {
+      dateFilter = MoreThan(minDate);
+    } else if (maxDate) {
+      dateFilter = LessThan(maxDate);
+    }
+
     const bookings = await this.repo.find({
       where: {
         service: { company: { id: companyId } },
+        date: dateFilter,
       },
       relations: ['service'],
       order: { date: 'ASC' },
