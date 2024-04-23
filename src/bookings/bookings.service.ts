@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Booking } from './booking.entity';
 import {
   Between,
-  Equal,
   FindOperator,
   LessThan,
   MoreThan,
@@ -30,12 +29,6 @@ export class BookingsService {
     private usersService: UsersService,
     private servicesService: ServicesService,
   ) {}
-
-  async findBookingByDate(date: Date) {
-    return this.repo.findOneBy({
-      date: Equal(date),
-    });
-  }
 
   async findBookingById(id: string) {
     const booking = await this.repo.findOne({
@@ -59,9 +52,8 @@ export class BookingsService {
       formattedDate,
       serviceId,
     );
-
     if (!isDateAvailable) {
-      throw new BadRequestException('Chosen date is unavailable');
+      throw new BadRequestException('Chosen booking date is unavailable');
     }
     const booking = this.repo.create({
       date: formattedDate,
@@ -82,6 +74,7 @@ export class BookingsService {
   async getUserBookings(userId: string) {
     return this.repo.find({
       where: { userId },
+      order: { date: 'ASC' },
     });
   }
 

@@ -15,6 +15,12 @@ export class User extends CommonEntity<User> {
   @Column({ select: false })
   password: string;
 
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
   @Column({
     type: 'enum',
     enum: UserRoleEnum,

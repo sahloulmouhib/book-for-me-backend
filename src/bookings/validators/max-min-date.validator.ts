@@ -18,7 +18,6 @@ class IsMinMaxDateValidator {
 
   defaultMessage(args: ValidationArguments) {
     const [maxDatePropertyName] = args.constraints;
-    console.log('test', maxDatePropertyName);
     return `$property should be less than ${maxDatePropertyName}`;
   }
 }

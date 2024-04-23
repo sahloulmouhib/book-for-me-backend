@@ -15,6 +15,7 @@ import { CreateAvailabilityDto } from '../availabilities/dtos/create-availabilit
 import { CreateServiceDto } from 'src/services/dtos/create-service.dto';
 import { isAdminOrAllowedUser } from 'src/helpers/helpers';
 import { User } from 'src/users/user.entity';
+import { Transactional } from 'typeorm-transactional';
 
 @Injectable()
 export class CompaniesService {
@@ -42,13 +43,13 @@ export class CompaniesService {
     return company;
   }
 
+  @Transactional() // Will open a transaction if one doesn't already exist
   async createCompany(
     ownerId: string,
     title: string,
     availabilities: CreateAvailabilityDto[],
     services: CreateServiceDto[],
   ) {
-    // TODO: add transaction
     const company = this.repo.create({ ownerId, title });
     const createdCompany = await this.repo.save(company);
     const createdAvailabilities = await this.availabilitiesService.create(
@@ -68,12 +69,15 @@ export class CompaniesService {
   }
 
   async getCompanyProfile(companyId: string) {
-    const company = await this.getCompany(companyId);
-    const availabilities =
-      await this.availabilitiesService.getCompanyAvailabilities(companyId);
+    const [company, services, availabilities] = await Promise.all([
+      this.getCompany(companyId),
+      this.servicesService.getCompanyServices(companyId),
+      this.availabilitiesService.getCompanyAvailabilities(companyId),
+    ]);
     return {
       company,
       availabilities,
+      services,
     };
   }
 

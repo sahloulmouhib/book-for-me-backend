@@ -15,6 +15,10 @@ import { Availability } from './availabilities/availability.entity';
 import { AvailabilitiesModule } from './availabilities/availabilities.module';
 import { ServicesModule } from './services/services.module';
 import { Service } from './services/service.entity';
+import { addTransactionalDataSource } from 'typeorm-transactional';
+import { DataSource } from 'typeorm';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './http-exception.filter';
 
 @Module({
   imports: [
@@ -22,15 +26,25 @@ import { Service } from './services/service.entity';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: env.DB_TYPE as any,
-      host: env.DB_HOST,
-      port: parseInt(env.DB_PORT),
-      username: env.DB_USERNAME,
-      password: env.DB_PASSWORD,
-      database: env.DB_NAME,
-      entities: [User, Booking, Company, Availability, Service],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      useFactory() {
+        return {
+          type: env.DB_TYPE as any,
+          host: env.DB_HOST,
+          port: parseInt(env.DB_PORT),
+          username: env.DB_USERNAME,
+          password: env.DB_PASSWORD,
+          database: env.DB_NAME,
+          entities: [User, Booking, Company, Availability, Service],
+          synchronize: true,
+        };
+      },
+      async dataSourceFactory(options) {
+        if (!options) {
+          throw new Error('Invalid data source options passed');
+        }
+        return addTransactionalDataSource(new DataSource(options));
+      },
     }),
     UsersModule,
     AuthModule,
@@ -40,6 +54,12 @@ import { Service } from './services/service.entity';
     ServicesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

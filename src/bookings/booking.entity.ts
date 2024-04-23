@@ -19,7 +19,7 @@ export class Booking extends CommonEntity<Booking> {
 
   @ManyToOne(() => Service, (service) => service.bookings)
   service: Service;
-  // TODO: test
+  // this used when we want to change the name of the column in the database
   // @JoinColumn({ referencedColumnName: 'id', name: 'serviceId' })
   @Column()
   serviceId: string;

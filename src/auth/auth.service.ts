@@ -21,7 +21,8 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
-    const { email, password, confirmPassword, role } = signUpDto;
+    const { email, password, confirmPassword, role, firstName, lastName } =
+      signUpDto;
     if (password !== confirmPassword) {
       throw new BadRequestException('Passwords does not match');
     }
@@ -40,7 +41,13 @@ export class AuthService {
     // join the hashed result and salt together
     const result = `${salt}${PASSWORD_SEPARATOR}${hash}`;
     // create a new user and save it
-    const user = await this.usersService.create(email, result, role);
+    const user = await this.usersService.create({
+      email,
+      password: result,
+      role,
+      firstName: firstName.toLocaleLowerCase(),
+      lastName: lastName.toLocaleLowerCase(),
+    });
 
     const payload = { ...user };
     const accessToken = await this.jwtService.signAsync(payload);

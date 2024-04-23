@@ -4,3 +4,5 @@ export const WEEK_DAYS_LENGTH = 7;
 
 export const MAX_STRING_LENGTH = 40;
 export const MIN_STRING_LENGTH = 3;
+
+export const INTERNAL_SERVER_ERROR = 'Internal Server Error';
