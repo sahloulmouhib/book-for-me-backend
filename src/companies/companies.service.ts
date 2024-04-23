@@ -26,17 +26,10 @@ export class CompaniesService {
     private servicesService: ServicesService,
   ) {}
 
-  async find(companyId: string) {
-    const company: Company | null = companyId
-      ? await this.repo.findOneBy({
-          id: companyId,
-        })
-      : null;
-    return company;
-  }
-
-  async getCompany(companyId: string) {
-    const company = await this.find(companyId);
+  async getCompanyById(companyId: string) {
+    const company = await this.repo.findOneBy({
+      id: companyId,
+    });
     if (!company) {
       throw new NotFoundException('Company is not found');
     }
@@ -52,10 +45,11 @@ export class CompaniesService {
   ) {
     const company = this.repo.create({ ownerId, title });
     const createdCompany = await this.repo.save(company);
-    const createdAvailabilities = await this.availabilitiesService.create(
-      availabilities,
-      createdCompany.id,
-    );
+    const createdAvailabilities =
+      await this.availabilitiesService.createCompanyAvailabilities(
+        availabilities,
+        createdCompany.id,
+      );
     const createdService = await this.servicesService.createCompanyServices(
       company.id,
       services,
@@ -70,7 +64,7 @@ export class CompaniesService {
 
   async getCompanyProfile(companyId: string) {
     const [company, services, availabilities] = await Promise.all([
-      this.getCompany(companyId),
+      this.getCompanyById(companyId),
       this.servicesService.getCompanyServices(companyId),
       this.availabilitiesService.getCompanyAvailabilities(companyId),
     ]);
@@ -82,7 +76,7 @@ export class CompaniesService {
   }
 
   async checkCompanyOwner(companyId: string, owner: User) {
-    const company = await this.getCompany(companyId);
+    const company = await this.getCompanyById(companyId);
     if (!isAdminOrAllowedUser(owner, company.ownerId)) {
       throw new ForbiddenException(
         'You are not allowed to manage to this company',

@@ -6,7 +6,7 @@ import { User } from 'src/users/user.entity';
 import { AddCompanyServiceDto } from './dtos/add-company-services.dto';
 
 @UseGuards(AuthGuard)
-@Controller('')
+@Controller()
 export class ServicesController {
   constructor(private serviceService: ServicesService) {}
 

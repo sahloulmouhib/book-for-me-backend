@@ -1,21 +1,21 @@
 import { WeekdayEnum } from 'src/enums';
 import { Availability } from './availability.entity';
-import { AvailabilitySlot, CompanyAvailability } from './availabilities.types';
+import { CreateAvailabilityDto } from './dtos/create-availability.dto';
+import { CreateSlotDto } from './dtos/create-slot.dto';
 
 export const formatAvailabilities = (
   availabilities: Availability[],
-): CompanyAvailability[] => {
-  const companyAvailability: Record<WeekdayEnum, AvailabilitySlot[]> | object =
-    {};
+): CreateAvailabilityDto[] => {
+  const availability: Record<WeekdayEnum, CreateSlotDto[]> | object = {};
   availabilities.forEach(({ endTime, startTime, weekDay }) => {
-    if (!companyAvailability.hasOwnProperty(weekDay)) {
-      companyAvailability[weekDay] = [{ startTime, endTime }];
+    if (!availability.hasOwnProperty(weekDay)) {
+      availability[weekDay] = [{ startTime, endTime }];
     } else {
-      companyAvailability[weekDay].push({ startTime, endTime });
+      availability[weekDay].push({ startTime, endTime });
     }
   });
-  const formattedAvailabilities: CompanyAvailability[] = Object.entries(
-    companyAvailability,
+  const formattedAvailabilities: CreateAvailabilityDto[] = Object.entries(
+    availability,
   ).map((item) => {
     return {
       weekDay: parseInt(item[0]),

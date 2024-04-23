@@ -9,7 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { promisify } from 'util';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
-import { HASH_SIZE, PASSWORD_SEPARATOR, SALT_SIZE } from './constants';
+import { HASH_SIZE, PASSWORD_SEPARATOR, SALT_SIZE } from './auth.constants';
 
 const scrypt = promisify(_scrypt);
 
@@ -27,7 +27,7 @@ export class AuthService {
       throw new BadRequestException('Passwords does not match');
     }
     // see if the email is in use
-    const users = await this.usersService.findOneByEmail(email);
+    const users = await this.usersService.getUserByEmail(email);
     if (users) {
       throw new BadRequestException('Email already in use');
     }
@@ -41,7 +41,7 @@ export class AuthService {
     // join the hashed result and salt together
     const result = `${salt}${PASSWORD_SEPARATOR}${hash}`;
     // create a new user and save it
-    const user = await this.usersService.create({
+    const user = await this.usersService.createUser({
       email,
       password: result,
       role,
@@ -59,7 +59,7 @@ export class AuthService {
 
   async signIn(signInDto: SignInDto) {
     const { email, password } = signInDto;
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
     }

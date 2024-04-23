@@ -1,5 +1,5 @@
 import { IsEmail, IsIn, IsString, MaxLength, MinLength } from 'class-validator';
-import { signUpUserValidation } from '../constants';
+import { signUpUserValidation } from '../auth.constants';
 import { UserRoleEnum } from 'src/users/users.enums';
 import { MAX_STRING_LENGTH, MIN_STRING_LENGTH } from 'src/constants';
 

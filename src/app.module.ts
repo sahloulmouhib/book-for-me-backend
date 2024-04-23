@@ -18,7 +18,7 @@ import { Service } from './services/service.entity';
 import { addTransactionalDataSource } from 'typeorm-transactional';
 import { DataSource } from 'typeorm';
 import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 @Module({
   imports: [

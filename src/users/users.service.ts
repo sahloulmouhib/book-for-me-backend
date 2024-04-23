@@ -7,7 +7,7 @@ import { User } from './user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async create({
+  async createUser({
     email,
     firstName,
     lastName,
@@ -24,7 +24,7 @@ export class UsersService {
     return this.repo.save(user);
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<User | null> {
     return this.repo.findOne({
       where: { email },
       select: {
@@ -41,7 +41,7 @@ export class UsersService {
     });
   }
 
-  async findUserById(id: string) {
+  async getUserById(id: string) {
     const user = await this.repo.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('User is not found');

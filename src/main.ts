@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { env } from 'process';
 import { ValidationPipe } from '@nestjs/common';
 import { initializeTransactionalContext } from 'typeorm-transactional';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -18,6 +18,7 @@ async function bootstrap() {
       forbidUnknownValues: true,
     }),
   );
+
   await app.listen(env.SERVER_PORT);
 }
 bootstrap();

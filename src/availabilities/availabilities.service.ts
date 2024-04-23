@@ -12,7 +12,10 @@ export class AvailabilitiesService {
     private repo: Repository<Availability>,
   ) {}
 
-  async create(availabilities: CreateAvailabilityDto[], companyId: string) {
+  async createCompanyAvailabilities(
+    availabilities: CreateAvailabilityDto[],
+    companyId: string,
+  ) {
     const newAvailabilities: Array<DeepPartial<Availability>> = [];
     availabilities.forEach(({ slots, weekDay }) => {
       slots.length > 0 &&
@@ -47,7 +50,10 @@ export class AvailabilitiesService {
     companyId: string,
   ) {
     await this.deleteCompanyAvailabilities(companyId);
-    const createdAvailabilities = await this.create(availabilities, companyId);
+    const createdAvailabilities = await this.createCompanyAvailabilities(
+      availabilities,
+      companyId,
+    );
     return formatAvailabilities(createdAvailabilities);
   }
 }

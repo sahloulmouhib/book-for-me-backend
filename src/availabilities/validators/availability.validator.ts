@@ -5,13 +5,13 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { CompanyAvailability } from 'src/availabilities/availabilities.types';
 import { WeekdayEnum } from 'src/enums';
+import { CreateAvailabilityDto } from '../dtos/create-availability.dto';
 
 @ValidatorConstraint({ name: 'IsAvailabilities', async: false })
 class AvailabilitiesValidator implements ValidatorConstraintInterface {
   validate(value: unknown) {
-    const availabilities = value as CompanyAvailability[];
+    const availabilities = value as CreateAvailabilityDto[];
 
     let isValid = true;
 

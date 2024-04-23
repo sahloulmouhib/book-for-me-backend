@@ -44,7 +44,7 @@ export class BookingsService {
     { date, serviceId }: CreateBookingDto,
     userId: string,
   ) {
-    await this.usersService.findUserById(userId);
+    await this.usersService.getUserByEmail(userId);
     await this.servicesService.getServiceById(serviceId);
 
     const formattedDate = removeSecondsAndMilliseconds(date);
