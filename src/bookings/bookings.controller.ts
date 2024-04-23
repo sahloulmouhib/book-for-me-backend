@@ -13,7 +13,7 @@ import { BookingsService } from './bookings.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthenticatedUser } from 'src/decorators/authentificated-user';
 import { User } from 'src/users/user.entity';
-import { GetCompaniesBookingsDto } from './dtos/get-companies-bookins.dto';
+import { GetCompaniesBookingsDto } from './dtos/get-companies-bookings.dto';
 
 @UseGuards(AuthGuard)
 @Controller()
