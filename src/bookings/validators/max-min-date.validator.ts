@@ -3,10 +3,11 @@ import {
   ValidationArguments,
   registerDecorator,
   ValidationOptions,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'IsMinMaxDate', async: false })
-class IsMinMaxDateValidator {
+class IsMinMaxDateValidator implements ValidatorConstraintInterface {
   validate(minDate: Date, args: ValidationArguments) {
     const [maxDatePropertyName] = args.constraints;
     const maxDateProperty = (args.object as any)[maxDatePropertyName];
@@ -30,7 +31,7 @@ export function IsMinMaxDate(
     registerDecorator({
       name: 'IsMinMaxDate',
       target: object.constructor,
-      propertyName: propertyName,
+      propertyName,
       options: validationOptions,
       validator: IsMinMaxDateValidator,
       constraints: [property],
