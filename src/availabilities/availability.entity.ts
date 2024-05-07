@@ -1,6 +1,6 @@
 import { CommonEntity } from 'src/shared/common.entity';
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
-import { Company } from '../companies/companies.entity';
+import { Company } from '../companies/company.entity';
 import { WeekdayEnum } from 'src/enums';
 
 @Entity()

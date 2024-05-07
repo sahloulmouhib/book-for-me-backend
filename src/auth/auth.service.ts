@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -29,7 +30,7 @@ export class AuthService {
     // see if the email is in use
     const users = await this.usersService.getUserByEmail(email);
     if (users) {
-      throw new BadRequestException('Email already in use');
+      throw new ConflictException('Email already in use');
     }
     // hash the users password
     // generate the salt (16 characters)

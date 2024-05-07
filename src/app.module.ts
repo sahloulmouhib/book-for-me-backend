@@ -10,7 +10,7 @@ import { User } from './users/user.entity';
 import { BookingsModule } from './bookings/bookings.module';
 import { Booking } from './bookings/booking.entity';
 import { CompaniesModule } from './companies/companies.module';
-import { Company } from './companies/companies.entity';
+import { Company } from './companies/company.entity';
 import { Availability } from './availabilities/availability.entity';
 import { AvailabilitiesModule } from './availabilities/availabilities.module';
 import { ServicesModule } from './services/services.module';

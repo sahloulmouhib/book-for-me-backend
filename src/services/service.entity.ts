@@ -6,7 +6,7 @@ import {
   Column,
   OneToMany,
 } from 'typeorm';
-import { Company } from '../companies/companies.entity';
+import { Company } from '../companies/company.entity';
 import { Booking } from 'src/bookings/booking.entity';
 
 @Entity()

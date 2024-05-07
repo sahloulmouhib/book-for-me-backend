@@ -1,5 +1,5 @@
 import { Booking } from 'src/bookings/booking.entity';
-import { Company } from 'src/companies/companies.entity';
+import { Company } from 'src/companies/company.entity';
 import { CommonEntity } from 'src/shared/common.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRoleEnum } from './users.enums';

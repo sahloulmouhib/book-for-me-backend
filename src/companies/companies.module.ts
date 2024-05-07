@@ -2,7 +2,7 @@ import { Module, forwardRef } from '@nestjs/common';
 import { CompaniesController } from './companies.controller';
 import { CompaniesService } from './companies.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Company } from './companies.entity';
+import { Company } from './company.entity';
 import { AvailabilitiesModule } from 'src/availabilities/availabilities.module';
 import { ServicesModule } from 'src/services/services.module';
 

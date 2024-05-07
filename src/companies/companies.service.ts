@@ -6,7 +6,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Company } from './companies.entity';
+import { Company } from './company.entity';
 import { Repository } from 'typeorm';
 import { AvailabilitiesService } from 'src/availabilities/availabilities.service';
 import { formatAvailabilities } from 'src/availabilities/availabilities.helpers';
