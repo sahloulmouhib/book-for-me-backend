@@ -40,10 +40,11 @@ export class CompaniesService {
   async createCompany(
     ownerId: string,
     title: string,
+    description: string,
     availabilities: CreateAvailabilityDto[],
     services: CreateServiceDto[],
   ) {
-    const company = this.repo.create({ ownerId, title });
+    const company = this.repo.create({ ownerId, title, description });
     const createdCompany = await this.repo.save(company);
     const createdAvailabilities =
       await this.availabilitiesService.createCompanyAvailabilities(
@@ -82,5 +83,17 @@ export class CompaniesService {
         'You are not allowed to manage to this company',
       );
     }
+  }
+
+  async addCompanyImage(
+    companyId: string,
+    imagePath: string,
+    companyOwner: User,
+  ) {
+    const company = await this.getCompanyById(companyId);
+    await this.checkCompanyOwner(companyId, companyOwner);
+    company.imagePath = imagePath;
+    await this.repo.save(company);
+    return company;
   }
 }

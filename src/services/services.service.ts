@@ -28,11 +28,15 @@ export class ServicesService {
   }
 
   async createCompanyServices(companyId: string, services: CreateServiceDto[]) {
-    const servicesToCreate = services.map(({ duration, title }) => ({
-      companyId,
-      title,
-      duration,
-    }));
+    const servicesToCreate = services.map(
+      ({ duration, title, description, price }) => ({
+        companyId,
+        title,
+        duration,
+        description,
+        price,
+      }),
+    );
     const createdServices = this.repo.create(servicesToCreate);
     return this.repo.save(createdServices);
   }

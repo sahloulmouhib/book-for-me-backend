@@ -24,9 +24,15 @@ export class Company extends CommonEntity<Company> {
   @Column()
   title: string;
 
+  @Column()
+  description: string;
+
   @OneToMany(() => Availability, (availability) => availability.company)
   availabilities: Availability[];
 
   @OneToMany(() => Service, (service) => service.company)
   services: Service[];
+
+  @Column({ default: null })
+  imagePath: string | null;
 }

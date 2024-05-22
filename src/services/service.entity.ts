@@ -20,6 +20,12 @@ export class Service extends CommonEntity<Service> {
   @Column()
   duration: number;
 
+  @Column()
+  price: number;
+
+  @Column({ default: null })
+  description: string | null;
+
   @ManyToOne(() => Company, (company) => company.services)
   company: Company;
 
@@ -27,5 +33,5 @@ export class Service extends CommonEntity<Service> {
   companyId: string;
 
   @OneToMany(() => Booking, (booking) => booking.service)
-  bookings: Service[];
+  bookings: Booking[];
 }
