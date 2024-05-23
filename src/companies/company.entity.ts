@@ -34,5 +34,5 @@ export class Company extends CommonEntity<Company> {
   services: Service[];
 
   @Column({ default: null })
-  imagePath: string | null;
+  image: string | null;
 }

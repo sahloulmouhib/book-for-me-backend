@@ -1,5 +1,6 @@
 import {
   IsNumber,
+  IsOptional,
   IsString,
   Max,
   MaxLength,
@@ -22,6 +23,7 @@ export class CreateServiceDto {
   @IsString()
   title: string;
 
+  @IsOptional()
   @MaxLength(MAX_MULTILINE_STRING_LENGTH)
   @MinLength(MIN_STRING_LENGTH)
   @IsString()

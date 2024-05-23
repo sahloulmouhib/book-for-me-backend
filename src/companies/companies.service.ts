@@ -13,10 +13,16 @@ import { formatAvailabilities } from 'src/availabilities/availabilities.helpers'
 import { ServicesService } from 'src/services/services.service';
 import { CreateAvailabilityDto } from '../availabilities/dtos/create-availability.dto';
 import { CreateServiceDto } from 'src/services/dtos/create-service.dto';
-import { isAdminOrAllowedUser } from 'src/helpers/helpers';
+import { getFilePathAndPath, isAdminOrAllowedUser } from 'src/helpers/helpers';
 import { User } from 'src/users/user.entity';
 import { Transactional } from 'typeorm-transactional';
-
+import * as fsAsync from 'fs/promises';
+import * as fsSync from 'fs';
+import { join } from 'path';
+import {
+  COMPANY_IMAGES_DIRECTORY_PATH,
+  COMPANY_IMAGE_FILE_START_NAME,
+} from './companies.constants';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -85,14 +91,25 @@ export class CompaniesService {
     }
   }
 
-  async addCompanyImage(
+  async addOrUpdateCompanyImage(
     companyId: string,
-    imagePath: string,
+    image: Express.Multer.File,
     companyOwner: User,
   ) {
+    const { filePath: imagePath, filename: imageName } = getFilePathAndPath(
+      image,
+      COMPANY_IMAGES_DIRECTORY_PATH,
+      COMPANY_IMAGE_FILE_START_NAME,
+    );
+
     const company = await this.getCompanyById(companyId);
     await this.checkCompanyOwner(companyId, companyOwner);
-    company.imagePath = imagePath;
+    if (company.image) {
+      const imageFullPath = join(COMPANY_IMAGES_DIRECTORY_PATH, company.image);
+      fsSync.existsSync(imageFullPath) && (await fsAsync.unlink(imageFullPath));
+    }
+    company.image = imageName;
+    await fsAsync.writeFile(imagePath, image.buffer);
     await this.repo.save(company);
     return company;
   }
