@@ -23,6 +23,7 @@ import {
   COMPANY_IMAGES_DIRECTORY_PATH,
   COMPANY_IMAGE_FILE_START_NAME,
 } from './companies.constants';
+import { UserRoleEnum } from 'src/users/users.enums';
 @Injectable()
 export class CompaniesService {
   constructor(
@@ -89,6 +90,22 @@ export class CompaniesService {
         'You are not allowed to manage to this company',
       );
     }
+  }
+
+  async checkIfUserIsCompanyOwner(user: User) {
+    if (
+      !(
+        user.role === UserRoleEnum.CompanyOwner ||
+        user.role === UserRoleEnum.Admin
+      )
+    ) {
+      return undefined;
+    }
+    const company = await this.repo.findOneBy({ ownerId: user.id });
+    if (!company) {
+      return undefined;
+    }
+    return company;
   }
 
   async addOrUpdateCompanyImage(

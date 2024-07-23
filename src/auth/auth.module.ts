@@ -4,12 +4,14 @@ import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from './auth.constants';
+import { CompaniesModule } from 'src/companies/companies.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService],
   imports: [
     UsersModule,
+    CompaniesModule,
     JwtModule.register({
       global: true,
       secret: jwtConfig.SECRET,

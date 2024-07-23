@@ -11,6 +11,9 @@ import { promisify } from 'util';
 import { SignUpDto } from './dtos/sign-up.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 import { HASH_SIZE, PASSWORD_SEPARATOR, SALT_SIZE } from './auth.constants';
+import { CompaniesService } from 'src/companies/companies.service';
+import { UserRoleEnum } from 'src/users/users.enums';
+import { User } from 'src/users/user.entity';
 
 const scrypt = promisify(_scrypt);
 
@@ -19,6 +22,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private companyService: CompaniesService,
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
@@ -52,9 +56,17 @@ export class AuthService {
 
     const payload = { ...user };
     const accessToken = await this.jwtService.signAsync(payload);
+
+    const checkIfUserIsCompanyOwner =
+      user.role === UserRoleEnum.User
+        ? {}
+        : {
+            isUserCompanyCreated: false,
+          };
     return {
       user,
       accessToken,
+      ...checkIfUserIsCompanyOwner,
     };
   }
 
@@ -75,9 +87,27 @@ export class AuthService {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: userPassword, ...payload } = user;
     const accessToken = await this.jwtService.signAsync(payload);
+
+    const checkIfUserIsCompanyOwner =
+      await this.checkIfUserIsCompanyOwner(user);
+
     return {
       user: payload,
       accessToken,
+      ...checkIfUserIsCompanyOwner,
     };
+  }
+
+  async checkIfUserIsCompanyOwner(user: User) {
+    const isUserCompanyOrAdmin =
+      user.role === UserRoleEnum.Admin ||
+      user.role === UserRoleEnum.CompanyOwner;
+
+    let isUserCompanyCreated: boolean | undefined;
+    if (isUserCompanyOrAdmin) {
+      isUserCompanyCreated =
+        !!(await this.companyService.checkIfUserIsCompanyOwner(user));
+    }
+    return isUserCompanyOrAdmin !== undefined ? { isUserCompanyCreated } : {};
   }
 }
